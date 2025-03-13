@@ -1,0 +1,11 @@
+# Node Modules
+/node_modules
+
+# TS stuff 
+tsconfig.json
+tsup.config.ts
+
+package-lock.json
+pnpm-lockb.json
+bun.lockb
+yarn.lockb
