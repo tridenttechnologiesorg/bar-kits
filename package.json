@@ -1,5 +1,5 @@
 {
-  "name": "my-turborepo",
+  "name": "bar-kits",
   "private": true,
   "scripts": {
     "build": "turbo run build",
