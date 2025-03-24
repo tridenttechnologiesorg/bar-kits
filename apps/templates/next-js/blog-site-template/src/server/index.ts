@@ -2,7 +2,12 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import { apiReference } from "@scalar/hono-api-reference";
 import { auth } from "@/lib/auth";
 import { cors } from "hono/cors";
-import { authMiddleware } from "./middlewars/auth.middleware";
+import {
+  authMiddleware,
+  requireAuth,
+  requireAuthRedirect,
+} from "./middlewars/auth.middleware";
+import { indexRoutes } from "./routes";
 
 /**
  * This file is the entry point for the API server. It has basic setups like swagger and auth handlers
@@ -14,7 +19,14 @@ app.on(["POST", "GET"], "/api/auth/*", (c) => {
   return auth.handler(c.req.raw);
 });
 
+// This middleware is used for all routes
 app.use("*", authMiddleware);
+
+// API routes that require authentication
+app.use("/api/protected/*", authMiddleware, requireAuth);
+
+// Web routes that require authentication
+app.use("/dashboard/*", authMiddleware, requireAuthRedirect);
 
 app.use(
   "/api/auth/*",
@@ -39,5 +51,7 @@ app.get(
     url: "/api/swagger.json",
   })
 );
+
+app.route("/api/v1", indexRoutes);
 
 export default app;

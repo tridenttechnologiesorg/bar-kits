@@ -9,6 +9,7 @@ export type User = InferSelectModel<typeof schema.user>;
 export type Session = InferSelectModel<typeof schema.session>;
 export type Account = InferSelectModel<typeof schema.account>;
 export type Verification = InferSelectModel<typeof schema.verification>;
+export type Blog = InferSelectModel<typeof schema.blog>;
 
 // Insert types (for creating new records)
 export type NewUser = Omit<InferInsertModel<typeof schema.user>, 'id' | 'createdAt' | 'updatedAt'> & {
@@ -35,12 +36,19 @@ export type NewVerification = Omit<InferInsertModel<typeof schema.verification>,
   updatedAt?: Date;
 };
 
+export type NewBlog = Omit<InferInsertModel<typeof schema.blog>, 'id' | 'createdAt' | 'updatedAt'> & {
+  id?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+
 // Table types object
 export const tableTypes = {
   user: {} as User,
   session: {} as Session,
   account: {} as Account,
   verification: {} as Verification,
+  blog: {} as Blog,
 } as const;
 
 // Export table type

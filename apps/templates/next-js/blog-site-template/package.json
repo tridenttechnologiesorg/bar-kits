@@ -7,7 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate-types": "ts-node --project tsconfig.scripts.json src/utils/scripts/generate-types.ts"
+    "db:generate-types": "ts-node --project tsconfig.scripts.json src/utils/scripts/generate-types.ts",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio --port=4983",
+    "db:generate": "drizzle-kit generate && pnpm run db:generate-types"
   },
   "dependencies": {
     "@hono/zod-openapi": "^0.19.2",

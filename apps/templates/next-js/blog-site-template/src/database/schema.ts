@@ -59,6 +59,19 @@ export const verification = pgTable("verification", {
   updatedAt: timestamp("updatedAt"),
 });
 
+export const blog = pgTable("blog", {
+  id: text("id")
+    .$defaultFn(() => uuidv4())
+    .primaryKey(),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  userId: text("userId")
+    .notNull()
+    .references(() => user.id),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
 
 export const table = {
   user,
