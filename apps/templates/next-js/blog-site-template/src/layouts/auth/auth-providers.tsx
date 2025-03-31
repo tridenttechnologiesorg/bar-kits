@@ -76,7 +76,7 @@ export default function AuthProviders({
     <div
       className={cn(
         "w-full",
-        layout === "flex" ? "flex flex-col space-y-2" : "grid grid-cols-3 gap-2"
+        layout === "flex" ? "flex flex-col space-y-2" : "grid grid-cols-2 max-grid-cols-3 gap-2"
       )}
     >
       {providers.map((provider) => (

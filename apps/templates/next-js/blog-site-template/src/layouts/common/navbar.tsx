@@ -1,191 +1,146 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { Book, Home, Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
+import type React from "react"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Menu, X } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
+import SearchBar from "./search-bar"
 
-export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+// This type defines the structure for our navigation links
+type NavItem = {
+  title: string
+  href: string
+  count?: number
+}
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
+// Navigation data - you can easily add/remove items here
+const navigationItems: NavItem[] = [
+  { title: "Articles", href: "/", count: 460 },
+  { title: "Radio", href: "/radio", count: 8 },
+  { title: "Podcast", href: "/podcast", count: 46 },
+  { title: "Be a writer", href: "/writer" },
+  { title: "Talk to us", href: "/contact" },
+]
 
-  const navLinks = [
-    { href: "/", label: "Features", icon: null },
-    { href: "/pricing", label: "Pricing", icon: null },
-    { href: "/faq", label: "FAQ", icon: null },
-    { href: "/contact", label: "Contact", icon: null },
-  ];
+// Additional mobile-only navigation items
+const mobileOnlyNavItems: NavItem[] = [
+  { title: "Categories", href: "/categories" },
+  { title: "Best of the week", href: "/best-of-week" },
+]
 
-  const menuVariants = {
-    closed: {
-      opacity: 0,
-      height: 0,
-      transition: {
-        duration: 0.3,
-        ease: "easeInOut",
-      },
-    },
-    open: {
-      opacity: 1,
-      height: "auto",
-      transition: {
-        duration: 0.3,
-        ease: "easeInOut",
-      },
-    },
-  };
-
-  const linkVariants = {
-    closed: { y: 20, opacity: 0 },
-    open: (i: number) => ({
-      y: 0,
-      opacity: 1,
-      transition: {
-        delay: i * 0.1,
-        duration: 0.3,
-      },
-    }),
-  };
+const Navbar = () => {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const router = useRouter()
 
   return (
-    <nav className="bg-background border-b sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <motion.div
-              className="flex items-center"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl">
-                B
-              </div>
-              <span className="ml-2 text-xl font-semibold">Blog</span>
-            </motion.div>
-          </Link>
+    <nav className="flex justify-between items-center py-6 px-4 md:px-8 relative z-50">
+      <div className="flex items-center">
+        <Link href="/">
+          <motion.div className="text-2xl font-bold" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            Blog Spot.
+          </motion.div>
+        </Link>
+      </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-4">
-            <div className="flex space-x-4">
-              {navLinks.map((link, index) => (
-                <motion.div
-                  key={link.href}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
-                >
-                  <Link
-                    href={link.href}
-                    className="group flex items-center px-3 py-2 text-sm rounded-md hover:bg-accent transition-colors"
-                  >
-                    {link.icon}
-                    <span>{link.label}</span>
-                    <motion.div
-                      className="h-0.5 w-0 bg-primary mt-0.5 group-hover:w-full"
-                      transition={{ duration: 0.3 }}
-                    />
-                  </Link>
-                </motion.div>
+      <div className="flex items-center space-x-3">
+        <SearchBar inNavbar={true} />
+
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Button variant="outline" size="sm" className="rounded-full" onClick={() => router.push('/auth/sign-in')}>
+            Sign In
+          </Button>
+        </motion.div>
+
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Button size="sm" className="rounded-full" onClick={() => router.push('/auth/sign-up')}>
+            Sign Up
+          </Button>
+        </motion.div>
+
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Button variant="outline" className="rounded-full px-5" onClick={() => setMenuOpen(!menuOpen)}>
+            {menuOpen ? <X className="h-4 w-4 mr-1" /> : <Menu className="h-4 w-4 mr-1" />}
+            Menu
+          </Button>
+        </motion.div>
+      </div>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            className="fixed inset-0 bg-white z-40 pt-24 px-6"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Close button inside menu */}
+            <motion.button
+              className="absolute top-6 right-6 p-2 rounded-full hover:bg-gray-100"
+              onClick={() => setMenuOpen(false)}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <X className="h-6 w-6" />
+              <span className="sr-only">Close menu</span>
+            </motion.button>
+
+            <div className="flex flex-col space-y-6 text-xl">
+              {/* Map through all navigation items for mobile */}
+              {[...navigationItems, ...mobileOnlyNavItems].map((item) => (
+                <MobileNavLink key={item.href} href={item.href} onClick={() => setMenuOpen(false)}>
+                  {item.title}
+                  {item.count && <span className="text-xs text-gray-500 ml-2">({item.count})</span>}
+                </MobileNavLink>
               ))}
             </div>
-            <div className="flex items-center space-x-2 ml-4">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.4, duration: 0.3 }}
-              >
-                <Button variant="outline" size="sm" asChild>
-                  <Link href="/signin">Sign In</Link>
-                </Button>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5, duration: 0.3 }}
-              >
-                <Button size="sm" asChild className="bg-black text-white hover:bg-gray-800">
-                  <Link href="/signup">Sign Up</Link>
-                </Button>
-              </motion.div>
-            </div>
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <Button variant="ghost" size="icon" onClick={toggleMenu}>
-              {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              className="md:hidden overflow-hidden"
-              initial="closed"
-              animate="open"
-              exit="closed"
-              variants={menuVariants}
-            >
-              <div className="px-2 pt-2 pb-3 space-y-1">
-                {navLinks.map((link, i) => (
-                  <motion.div
-                    key={link.href}
-                    custom={i}
-                    variants={linkVariants}
-                    initial="closed"
-                    animate="open"
-                    exit="closed"
-                  >
-                    <Link
-                      href={link.href}
-                      className={cn(
-                        "flex items-center px-3 py-2 rounded-md text-base font-medium hover:bg-accent transition-colors",
-                      )}
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {link.icon}
-                      {link.label}
-                    </Link>
-                  </motion.div>
-                ))}
-                <div className="flex flex-col space-y-2 pt-2">
-                  <motion.div
-                    custom={navLinks.length}
-                    variants={linkVariants}
-                    initial="closed"
-                    animate="open"
-                    exit="closed"
-                  >
-                    <Button variant="outline" className="w-full justify-start" asChild onClick={() => setIsOpen(false)}>
-                      <Link href="/signin">Sign In</Link>
-                    </Button>
-                  </motion.div>
-                  <motion.div
-                    custom={navLinks.length + 1}
-                    variants={linkVariants}
-                    initial="closed"
-                    animate="open"
-                    exit="closed"
-                  >
-                    <Button className="w-full justify-start bg-black text-white hover:bg-gray-800" asChild onClick={() => setIsOpen(false)}>
-                      <Link href="/signup">Sign Up</Link>
-                    </Button>
-                  </motion.div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
-  );
+  )
 }
+
+interface NavLinkProps {
+  children: React.ReactNode
+  href: string
+  active?: boolean
+}
+
+const NavLink: React.FC<NavLinkProps> = ({ children, href, active }) => {
+  return (
+    <Link href={href} className="text-sm font-medium relative">
+      {children}
+      {active && (
+        <motion.div
+          className="absolute -bottom-1 left-0 right-0 h-0.5 bg-black"
+          layoutId="navbar-underline"
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        />
+      )}
+    </Link>
+  )
+}
+
+interface MobileNavLinkProps {
+  children: React.ReactNode
+  href: string
+  onClick: () => void
+}
+
+const MobileNavLink: React.FC<MobileNavLinkProps> = ({ children, href, onClick }) => {
+  return (
+    <motion.div whileHover={{ x: 10 }} transition={{ duration: 0.2 }}>
+      <Link href={href} className="block py-2 font-medium" onClick={onClick}>
+        {children}
+      </Link>
+    </motion.div>
+  )
+}
+
+export default Navbar
+
