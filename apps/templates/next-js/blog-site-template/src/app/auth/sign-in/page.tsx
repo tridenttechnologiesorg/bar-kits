@@ -20,6 +20,8 @@ import {
 import { type SignInFormValues, signInSchema } from "@/utils/schema/auth";
 import AuthLayout from "@/layouts/auth/auth-layout";
 import AuthForm from "@/layouts/auth/auth-form";
+import { signInEmailPassword } from "@/lib/auth-providers";
+import { toast } from "sonner";
 
 export default function SignInPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -35,13 +37,10 @@ export default function SignInPage() {
 
   const onSubmit = async (data: SignInFormValues) => {
     setIsLoading(true);
-
-    // Simulate authentication
     try {
-      // Replace with actual authentication logic
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log("Sign in successful", data);
-      // Redirect or show success message
+      await signInEmailPassword(data.email, data.password, () => {
+        toast.success("Sign in successful");
+      });
     } catch (error) {
       console.error("Sign in failed", error);
       form.setError("root", {

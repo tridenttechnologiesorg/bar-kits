@@ -1,7 +1,8 @@
 import { JSX, ReactNode } from "react";
+import { OAuthProviders } from "../libs/auth";
 
 export type AuthProvider = {
-  id: string;
+  id: OAuthProviders;
   name: string;
   icon: JSX.Element;
   color: string;
