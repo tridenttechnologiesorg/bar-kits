@@ -1,4 +1,5 @@
 "use client";
+import FooterSection from "@/layouts/common/footer";
 import Navbar from "@/layouts/common/navbar";
 import HeroSection from "@/layouts/home/hero-section";
 import { zoomInAnimation } from "@/utils/animations/motion";
@@ -21,6 +22,14 @@ export default function Home() {
       >
         <HeroSection />
       </motion.main>
+      <motion.section
+        initial="hidden"
+        animate="show"
+        variants={zoomInAnimation}
+        className="pt-24"
+      >
+        <FooterSection />
+      </motion.section>
     </motion.div>
   );
 }
